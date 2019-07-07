@@ -16,32 +16,32 @@ start :-
 	analysiere(haelfe, G), write(G), nl.	
 	
 %----------------------------------
-% "phrase(Eingabe,Liste)" ist ein zweistelliges PrŠdikat, welches auf die DCG Regeln zugreift
+% "phrase(Eingabe,Liste)" ist ein zweistelliges PrÃ¤dikat, welches auf die DCG Regeln zugreift
 % und die Eingabe in die festgelgte Listenform generiert bzw. mit der festgelgten 
 % Listenform abgleicht.
 %
-% "akzptiert(Automatenname,Liste Ausgabe" ist dreistelliges PrŠdikat, welches die Ausgabe aus den
+% "akzptiert(Automatenname,Liste Ausgabe" ist dreistelliges PrÃ¤dikat, welches die Ausgabe aus den
 % Automaten hervorruft. - weiteres siehe unten
 %
-% "analysiere(Eingabe,Ausgabe)" ist ein zweistelliges PrŠdikat, welches die DCG nutzt, um die
+% "analysiere(Eingabe,Ausgabe)" ist ein zweistelliges PrÃ¤dikat, welches die DCG nutzt, um die
 % Eingabe in seine Einzelteile zu teilen und auf die Ausgabe des Automaten zugreift.
 %----------------------------------
 
 analysiere(Eingabe,Ausgabe) :- phrase(Eingabe,Liste), akzeptiert(_,Liste,Ausgabe).
 
 %----------------------------------
-% "akzeptiert(Name,Liste,Ausgabe)" ist ein dreistelliges PrŠdikat, welches gespeicherte Informationen
-% Ÿber die Eingabe heraus gibt.
+% "akzeptiert(Name,Liste,Ausgabe)" ist ein dreistelliges PrÃ¤dikat, welches gespeicherte Informationen
+% Ã¼ber die Eingabe heraus gibt.
 %----------------------------------
 
 akzeptiert(Name,Liste,Ausgabe) :-
-	automat(Name,A),							% Es gibt einen Automaten mit dem Namen "Name".
-	A = fst(Start,_,_,_,_,_),					% Dieser wird als 6 stelliges PrŠdikat dargestellt.
-												% fst steht fŸr finite state transductor
-												% fsm(Startzustand,Alphabet,ZustŠnde,Ausgabe,EndzustŠnde,†bergŠnge)
+	automat(Name,A),						% Es gibt einen Automaten mit dem Namen "Name".
+	A = fst(Start,_,_,_,_,_),					% Dieser wird als 6 stelliges PrÃ¤dikat dargestellt.
+									% fst steht fÃ¼r finite state transductor
+									% fsm(Startzustand,Alphabet,ZustÃ¤nde,Ausgabe,EndzustÃ¤nde,ÃœbergÃ¤nge)
 	
-	akzeptiert(Name,Liste,Start,Ausgabe).		% Das eigentliche akzeptiert PrŠdikat ist 4 stellig.
-												% Dieses 3 stellige PrŠdikat lŠsst den Startzustand weg.
+	akzeptiert(Name,Liste,Start,Ausgabe).				% Das eigentliche akzeptiert PrÃ¤dikat ist 4 stellig.
+									% Dieses 3 stellige PrÃ¤dikat lÃ¤sst den Startzustand weg.
 	
 %----------------------------------
 % trivialer Fall:
@@ -49,34 +49,34 @@ akzeptiert(Name,Liste,Ausgabe) :-
 %----------------------------------
 
 akzeptiert(Name,[],Zustand,Ausgabe) :-	
-	automat(Name,A),							% Es gibt einen Automaten mit dem Namen "Name".
-	A = fst(_,_,_,Infos,EZ,_),					% Dieser wird als 6 stelliges PrŠdikat dargestellt.
-	ist_enthalten(Zustand,EZ),					% Der Zustand der Eingabeelemente muss in den EndzustŠnden 
-												% enthalten sein.
-	ist_enthalten(ausgabe(Zustand,Ausgabe),Infos).	% Das 2 stellige PrŠfikat "ausgabe(Zustand,Ausgabe)"
-													% muss in der Menge der Infos des Automaten enthalten sein.
+	automat(Name,A),						% Es gibt einen Automaten mit dem Namen "Name".
+	A = fst(_,_,_,Infos,EZ,_),					% Dieser wird als 6 stelliges PrÃ¤dikat dargestellt.
+	ist_enthalten(Zustand,EZ),					% Der Zustand der Eingabeelemente muss in den EndzustÅ nden 
+									% enthalten sein.
+	ist_enthalten(ausgabe(Zustand,Ausgabe),Infos).			% Das 2 stellige PrÃ¤dikat "ausgabe(Zustand,Ausgabe)"
+									% muss in der Menge der Infos des Automaten enthalten sein.
 													
 									% d.h.:
-									% Die Ausgabe befindet sich im PrŠdikat "ausgabe/2" welches
+									% Die Ausgabe befindet sich im PrÃ¤dikat "ausgabe/2" welches
 									% sich in der Menge der Infos im Automaten befindet.
 									% Damit auch wirklich eine Ausgabe erfolgt, muss der Automat von
 									% einem Startzustand zu einen Endzustand gelangen.
 	
 %----------------------------------
 % rekursiver Fall:
-% eine Liste wird akzeptiert, sobald alle Elemente in den †bergŠngen enthalten sind.
+% eine Liste wird akzeptiert, sobald alle Elemente in den â€ bergÅ ngen enthalten sind.
 %----------------------------------
 
 akzeptiert(Name,[Symbol|Restsymbole],Zustand,Ausgabe) :-
 	automat(Name,A),							% Es gibt einen Automaten mit dem Namen "Name".
-	A = fst(_,_,_,_,_,Uebergaenge),				% Dieser wird als 6 stelliges PrŠdikat dargestellt.
-	ist_enthalten(uebergang(Zustand,Symbol,		% Ein †bergang mit Zustand, Symbol und NeuemZustand muss in
-	NeuerZustand),Uebergaenge),					% der Menge der †bergŠnge enthalten sein.
+	A = fst(_,_,_,_,_,Uebergaenge),						% Dieser wird als 6 stelliges PrÃ¤dikat dargestellt.
+	ist_enthalten(uebergang(Zustand,Symbol,					% Ein Ãœbergang mit Zustand, Symbol und NeuemZustand muss in
+	NeuerZustand),Uebergaenge),						% der Menge der ÃœbergÃ¤nge enthalten sein.
 												
-												% d.h.:
-	akzeptiert(Name,Restsymbole,				% Die Eingabe wird akzeptiert, sobald der Zustand und alle
-	NeuerZustand,Ausgabe).						% neuen ZustŠnde in den †bergŠngen enthalten sind, 
-												% danach folgt die Ausgabe.
+										% d.h.:
+	akzeptiert(Name,Restsymbole,						% Die Eingabe wird akzeptiert, sobald der Zustand und alle
+	NeuerZustand,Ausgabe).							% neuen ZustÅ nde in den â€ bergÅ ngen enthalten sind, 
+										% danach folgt die Ausgabe.
 
 
 %----------------------------------		
@@ -86,41 +86,41 @@ akzeptiert(Name,[Symbol|Restsymbole],Zustand,Ausgabe) :-
 automat(helfen,fst(
 			0,																% 1: Startzustand
 
-			[helf,half,haelf,hilf,hol,ge,fen,en,est,st,e,et,end,t], 		% 2: Alphabet
+			[helf,half,haelf,hilf,hol,ge,fen,en,est,st,e,et,end,t], 				% 2: Alphabet
 			
-			[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],	% 3: ZustŠnde
+			[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],				% 3: ZustÃ¤nde
 			
-																			% 4: Ausgabe
-			[ausgabe(2,[verb,1,sg,praet,ind]),								% ich half
-			ausgabe(2,[verb,3,sg,praet,ind]), 								% er/sie/es half
-			ausgabe(4,[verb,imp,sg]),										% hilf!
-			ausgabe(7,[verb,part2]),										% geholfen
-			ausgabe(8,[verb,2,sg,praes,ind]),								% du hilfst
-			ausgabe(9,[verb,3,sg,praes,ind]),								% er/sie/es hilft
-			ausgabe(10,[verb,3,pl,praet,konj2]),							% sie hŠlfen
-			ausgabe(10,[verb,1,pl,praet,konj2]),							% wir hŠlfen
-			ausgabe(11,[verb,2,sg,praet,konj2]),							% hŠlfest
-			ausgabe(12,[verb,1,sg,praet,konj2]),							% ich hŠlfe
-			ausgabe(12,[verb,3,sg,preat,konj2]),							% er/sie/es hŠlfe
-			ausgabe(13,[verb,2,pl,preat,konj2]),							% ihr hŠlfet
-			ausgabe(14,[verb,1,pl,praet,ind]),								% wir halfen
-			ausgabe(14,[verb,3,pl,praet,ind]),								% sie halfen
-			ausgabe(15,[verb,2,sg,preat,ind]),								% du halfst
-			ausgabe(16,[verb,1,pl,praes,ind]),								% wir helfen
+														% 4: Ausgabe
+			[ausgabe(2,[verb,1,sg,praet,ind]),							% ich half
+			ausgabe(2,[verb,3,sg,praet,ind]), 							% er/sie/es half
+			ausgabe(4,[verb,imp,sg]),								% hilf!
+			ausgabe(7,[verb,part2]),								% geholfen
+			ausgabe(8,[verb,2,sg,praes,ind]),							% du hilfst
+			ausgabe(9,[verb,3,sg,praes,ind]),							% er/sie/es hilft
+			ausgabe(10,[verb,3,pl,praet,konj2]),							% sie hÃ¤lfen
+			ausgabe(10,[verb,1,pl,praet,konj2]),							% wir hÃ¤lfen
+			ausgabe(11,[verb,2,sg,praet,konj2]),							% hÅ lfest
+			ausgabe(12,[verb,1,sg,praet,konj2]),							% ich hÅ lfe
+			ausgabe(12,[verb,3,sg,preat,konj2]),							% er/sie/es hÃ¤lfe
+			ausgabe(13,[verb,2,pl,preat,konj2]),							% ihr hÃ¤lfet
+			ausgabe(14,[verb,1,pl,praet,ind]),							% wir halfen
+			ausgabe(14,[verb,3,pl,praet,ind]),							% sie halfen
+			ausgabe(15,[verb,2,sg,preat,ind]),							% du halfst
+			ausgabe(16,[verb,1,pl,praes,ind]),							% wir helfen
 			ausgabe(16,[verb,1,pl,praes,konj1]),							% wir helfen
-			ausgabe(16,[verb,3,pl,praes,ind]),								% sie helfen
+			ausgabe(16,[verb,3,pl,praes,ind]),							% sie helfen
 			ausgabe(16,[verb,3,pl,praes,konj1]),							% sie helfen
-			ausgabe(17,[verb,1,sg,preas,ind]),								% ich helfe
+			ausgabe(17,[verb,1,sg,preas,ind]),							% ich helfe
 			ausgabe(17,[verb,1,sg,praes,konj1]),							% ich helfe
 			ausgabe(17,[verb,3,sg,praes,konj1]),							% er/sie/es helfe
-			ausgabe(18,[verb,part1]),										% helfend 
+			ausgabe(18,[verb,part1]),								% helfend 
 			ausgabe(19,[verb,2,sg,praes,konj1]),							% du helfest
 			ausgabe(20,[verb,2,pl,preas,konj1]),							% ihr helfet
-			ausgabe(21,[verb,2,pl,praes,ind]),								% ihr helft
-			ausgabe(22,[verb,2,pl,praet,ind])								% ihr halft
+			ausgabe(21,[verb,2,pl,praes,ind]),							% ihr helft
+			ausgabe(22,[verb,2,pl,praet,ind])							% ihr halft
 			],																
 			
-			[2,4,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],				% 5: EnzustŠnde															% 3: Endzustaende
+			[2,4,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],					% 5: EndzustÃ¤nde															% 3: Endzustaende
 			
 			[uebergang(0,helf,1),uebergang(0,half,2),
 			uebergang(0,haelf,3),uebergang(0,hilf,4),
@@ -133,7 +133,7 @@ automat(helfen,fst(
 			uebergang(5,holf,6),uebergang(6,en,7),
 			uebergang(1,est,19),uebergang(1,et,20),
 			uebergang(1,t,21),uebergang(2,t,22)
-			])																% 6: †bergŠnge
+			])																% 6: ÃœbergÃ¤nge
 		).
 		
 		
@@ -163,11 +163,11 @@ helft 		--> [helft].
 halft 		--> [halft].
 
 %----------------------------------
-% "ist_enthalten(Element,Liste)" ist ein zweistelliges PrŠdikat, welches schaut,
+% "ist_enthalten(Element,Liste)" ist ein zweistelliges PrÃ¤dikat, welches schaut,
 % ob ein Element in einer Liste enthalten ist.
 %----------------------------------
 
 ist_enthalten(E,[E|_]).			% trivialer Fall: das Elemt ist im Kopf der Liste
 
 ist_enthalten(E,[_|R]) :- 		% rekursiver Fall: die Rest Liste wird zur Liste und man schaut sich
-		ist_enthalten(E,R).		% erneut den Kopf der Liste an.
+		ist_enthalten(E,R).	% erneut den Kopf der Liste an.
